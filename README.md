@@ -18,10 +18,10 @@ The **Finance Tracking AI App** is designed to help university students in Kenya
 
 ## 🏗️ Technology Stack
 - **Backend Framework:** Django, Django REST Framework
-- **Database:** PostgreSQL
+- **Database:** TBD
 - **Authentication:** JWT (JSON Web Tokens)
 - **AI/ML:** Scikit-learn, TensorFlow (for future AI features)
-- **Deployment:** Docker (optional), Cloud Platforms
+- **Deployment:** TBD
 
 ---
 
@@ -66,13 +66,13 @@ DATABASE_URL=postgres://username:password@localhost:5432/your_db
 
 ## 🗂️ Project Structure
 ```
-finance-tracking-backend/
-├── finance_app/           # Core Django app
+FINANCE_TRACKER/
+├── api/           # Core Django app
 │   ├── models.py          # Database models (Expense, Budget, SavingsGoal)
 │   ├── serializers.py     # DRF serializers
 │   ├── views.py           # API views
 │   └── urls.py            # App-specific routes
-├── finance_ai/            # AI models and logic
+├── finance/            # AI models and logic
 ├── manage.py              # Django management script
 └── requirements.txt       # Python dependencies
 ```
@@ -145,10 +145,6 @@ python manage.py test
 
 ---
 
-## 💡 Contact
-For questions or support:
-- **Email:** yourname@example.com
-- **GitHub:** [@your-username](https://github.com/your-username)
 
 > *Empowering Kenyan students with smarter financial tools!*
 
