@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ExpenseViewSet, BudgetViewSet, SavingsGoalViewSet
+from .views import ExpenseViewSet, BudgetViewSet, SavingsGoalViewSet, FinancialBookViewSet
 
 # using Django restframework DefaultRouter to handle CRUD operations
 # the DefaultRouter class automatically creates the API root view for us
@@ -12,10 +12,11 @@ from .views import ExpenseViewSet, BudgetViewSet, SavingsGoalViewSet
 router = DefaultRouter()
 router.register(r'expenses', ExpenseViewSet)
 router.register(r'budgets', BudgetViewSet)
-router.register(r'savings-goals', SavingsGoalViewSet)
+router.register(r'goals', SavingsGoalViewSet)
+router.register(r'books', FinancialBookViewSet)
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
 ]
 
 
