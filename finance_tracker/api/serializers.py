@@ -1,7 +1,7 @@
 # this is a serializer to convert Django model instances into
 # JSON and vice versa. 
 from rest_framework import serializers
-from .models import Expense, Budget, SavingsGoal
+from .models import Expense, Budget, SavingsGoal, FinancialBook
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +17,9 @@ class SavingsGoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavingsGoal
         fields = '__all__'
+
+class FinancialBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinancialBook
+        fields = '__all__'
+

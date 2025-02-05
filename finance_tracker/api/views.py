@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Expense, Budget, SavingsGoal
-from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer
+from .models import Expense, Budget, SavingsGoal, FinancialBook
+from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer, FinancialBookSerializer
 
 # Create your views here.
 # using Django restframework viewsets to handle CRUD operations
@@ -19,3 +19,6 @@ class SavingsGoalViewSet(viewsets.ModelViewSet):
     queryset = SavingsGoal.objects.all()
     serializer_class = SavingsGoalSerializer
 
+class FinancialBookViewSet(viewsets.ModelViewSet):
+    queryset = FinancialBook.objects.all()
+    serializer_class = FinancialBookSerializer
