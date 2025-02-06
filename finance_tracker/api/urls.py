@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ExpenseViewSet, BudgetViewSet, SavingsGoalViewSet, ai_book_recommendation
+from .views import ExpenseViewSet, BudgetViewSet, SavingsGoalViewSet, generate_book_recommendations
 
 # using Django restframework DefaultRouter to handle CRUD operations
 # the DefaultRouter class automatically creates the API root view for us
@@ -17,7 +17,8 @@ router.register(r'goals', SavingsGoalViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('books/', ai_book_recommendation, name='books'),
+    #path('books/', ai_book_recommendation, name='books'),
+    path('geminibook/', generate_book_recommendations, name='geminibook')
 ]
 
 
