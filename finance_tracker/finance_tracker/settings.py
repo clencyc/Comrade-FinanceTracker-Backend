@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
+    'MpesaAPI',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'finance_tracker.wsgi.application'
 
+MPESA_CONSUMER_KEY="iSrGmRANhliLTHf3T2dfpQ8V0Lh5afWAPAaSgcvcKXohV5qM"
+MPESA_CONSUMER_SECRET="DQLtzDydwKCbVkv8S0opePWl2He9oIMZnsWMTANpUDDomYo2iDDLdOt9DCbUYHKP"
+MPESA_SHORTCODE=""
+MPESA_PASSKEY=""
+MPESA_BASE_URL="https://sandbox.safaricom.co.ke"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

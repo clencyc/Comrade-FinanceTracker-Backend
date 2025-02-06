@@ -17,8 +17,7 @@ router.register(r'goals', SavingsGoalViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    #path('books/', ai_book_recommendation, name='books'),
-    path('geminibook/', generate_book_recommendations, name='geminibook')
+    path('book-recommend/', generate_book_recommendations, name='geminibook')
 ]
 
 
