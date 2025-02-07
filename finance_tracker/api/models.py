@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 # expense models
 class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -39,9 +39,15 @@ class FinancialBook(models.Model):
     author = models.CharField(max_length=255)
     description = models.TextField()
     genre = models.CharField(max_length=100)
-    published_date = models.DateField()
+    published_date = models.DateField(null=True, blank=True)
+    difficulty_level = models.CharField(max_length=50, default='Beginner', choices=[
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced')
+    ])
     rating = models.DecimalField(max_digits=3, decimal_places=2)
     cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
