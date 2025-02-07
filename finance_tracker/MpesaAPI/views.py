@@ -31,10 +31,10 @@ def fetch_transaction_status(request, transaction_id):
     }
     payload = {
         "Initiator": "testapi",
-        "SecurityCredential": "password1234",
+        "SecurityCredential": "U+k9SfaQjZ61OloYJ+lNKnCCfIuQSFq3qsMPkxe3RR50lPud7nEgnOVOQo6IFvetc5cNow1n3gdminEPhZRzPzxU1htJLbfKPYU/+YRDJeLGFvFFSYiagKH49xx/fUULbsR0LdTHPo6mdYaAW8KkiDkF8WMJiW48fsZhA3p2BxjjCflOhm9H0fUmhL385BLykZx+FUsspOmbe2BsqC64GF0gwegnLw/3gZuUW48NQtvONXFvLY3UgzeeNj9yOYDj9O8NAGWUUjCkXLJGVdfW60LmbvDORDhlBYo5kHgy+N5VCYlYgR27ZyZFHRLlsknSLJssj27tA6+0gX01dYp2bg==",
         "CommandID": "TransactionStatusQuery",
         "TransactionID": transaction_id,
-        "PartyA": "600000",
+        "PartyA": "600987",
         "IdentifierType": "4",
         "ResultURL": "https://yourdomain.com/result",
         "QueueTimeOutURL": "https://yourdomain.com/timeout",
