@@ -1,12 +1,13 @@
 from django.conf import settings
 import google.generativeai as genai
 from django.conf import settings
+from rest_framework.views import APIView
 from django.shortcuts import render, HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Expense, Budget, SavingsGoal, FinancialBook
+from .models import Expense, Budget, SavingsGoal, FinancialBook, Transaction
 from rest_framework.decorators import api_view
-from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer
+from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer, TransactionSerializer
 import re
 from datetime import date
 
@@ -29,16 +30,35 @@ class SavingsGoalViewSet(viewsets.ModelViewSet):
     queryset = SavingsGoal.objects.all()
     serializer_class = SavingsGoalSerializer
 
+class UploadTransactionView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        
+        if 'details' in data:
+            data['details'] = re.sub(r'\d+', '', data['details'])[:250]  # Clean details
+
+        serializer = TransactionSerializer(data=data)
+        if serializer.is_valid():
+            transaction = serializer.save()
+            transaction.categorize_transaction()
+            transaction.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['POST'])
 def generate_book_recommendations(request):
     """Generate financial book recommendations using Gemini AI"""
    
-    user_query = request.data.get('query', 'Recommend financial books for students')
+    user_query = request.data.get('query', 'Recommend 10 financial books for students')
+
 
     if not user_query:
         return Response({"error": "Query cannot be empty"}, status=400)
     
-    # to check if there are existing books in the database
+    # to check if there are existing books in the database with the same genre
     existing_books = FinancialBook.objects.filter(genre__icontains=user_query)
 
     if existing_books.exists():
@@ -58,3 +78,8 @@ def generate_book_recommendations(request):
     )
 
     return Response({"message": "New book entry created", "book": new_book.title}, status=201)
+
+
+# TODO - Add cover image to book reccommendation API
+# Add a financial quote
+# Add a chatbot
