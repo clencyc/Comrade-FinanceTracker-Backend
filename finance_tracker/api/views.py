@@ -2,12 +2,13 @@ from django.conf import settings
 import google.generativeai as genai
 from django.conf import settings
 from rest_framework.views import APIView
+from rest_framework import generics
 from django.shortcuts import render, HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Expense, Budget, SavingsGoal, FinancialBook, Transaction
+from .models import Expense, Budget, SavingsGoal, FinancialBook, Transaction, DailySavings
 from rest_framework.decorators import api_view
-from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer, TransactionSerializer
+from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer, TransactionSerializer, DailySavingsSerializer, FinancialBookSerializer
 import re
 from datetime import date
 
@@ -30,6 +31,11 @@ class SavingsGoalViewSet(viewsets.ModelViewSet):
     queryset = SavingsGoal.objects.all()
     serializer_class = SavingsGoalSerializer
 
+# retrieve financial books from the database
+class FinancialBookViewSet(viewsets.ModelViewSet):
+    queryset = FinancialBook.objects.all()
+    serializer_class = FinancialBookSerializer
+
 class UploadTransactionView(APIView):
     def post(self, request):
         data = request.data.copy()
@@ -47,6 +53,12 @@ class UploadTransactionView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class DailySavingsCreateView(generics.CreateAPIView):
+    queryset = DailySavings.objects.all()
+    serializer_class = DailySavingsSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 @api_view(['POST'])
 def generate_book_recommendations(request):
