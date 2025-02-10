@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSerializer, TransactionSerializer, DailySavingsSerializer, FinancialBookSerializer
 import re
 from datetime import date
+from .services import get_book_recommendations
 
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
@@ -60,12 +61,12 @@ class DailySavingsCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 @api_view(['POST'])
 def generate_book_recommendations(request):
     """Generate financial book recommendations using Gemini AI"""
    
     user_query = request.data.get('query', 'Recommend 10 financial books for students')
-
 
     if not user_query:
         return Response({"error": "Query cannot be empty"}, status=400)
@@ -78,20 +79,20 @@ def generate_book_recommendations(request):
         books = existing_books.values('title', 'author', 'genre', 'difficulty_level', 'rating')
         return Response({"books": list(books)}, status=200)
     
+    # Use Gemini AI to get book recommendations
+    recommendations = get_book_recommendations(user_query)
+    
     # Example logic to create a new book entry with a default rating
     new_book = FinancialBook.objects.create(
         title="Example Book Title",
         author="Unknown",
         genre=user_query,
-        description="I want beginner-level books on investing",
-        published_date=date.today(),  # Set default published_date
+        description=recommendations,
         difficulty_level="Beginner",
-        rating=5.0  # Set default rating
+        rating=5.0
     )
 
-    return Response({"message": "New book entry created", "book": new_book.title}, status=201)
-
-
+    return Response({"message": "New book entry created", "book": new_book.title, "recommendations": recommendations}, status=201)
 # TODO - Add cover image to book reccommendation API
 # Add a financial quote
 # Add a chatbot
