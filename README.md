@@ -57,9 +57,7 @@ python manage.py runserver
 ### 3️⃣ Environment Variables
 Create a `.env` file:
 ```ini
-DEBUG=True
-SECRET_KEY=your_secret_key
-DATABASE_URL=postgres://username:password@localhost:5432/your_db
+GEMINI_API_KEY="your key"
 ```
 
 ---
