@@ -29,7 +29,7 @@ The **Finance Tracking AI App** is designed to help university students in Kenya
 
 ### 1️⃣ Prerequisites
 - Python 3.10+
-- PostgreSQL
+- TBD
 - Virtualenv (recommended)
 
 ### 2️⃣ Installation
@@ -57,9 +57,7 @@ python manage.py runserver
 ### 3️⃣ Environment Variables
 Create a `.env` file:
 ```ini
-DEBUG=True
-SECRET_KEY=your_secret_key
-DATABASE_URL=postgres://username:password@localhost:5432/your_db
+GEMINI_API_KEY="your key"
 ```
 
 ---
@@ -72,7 +70,7 @@ FINANCE_TRACKER/
 │   ├── serializers.py     # DRF serializers
 │   ├── views.py           # API views
 │   └── urls.py            # App-specific routes
-├── finance/            # AI models and logic
+├── finance_tracker/            # AI models and logic
 ├── manage.py              # Django management script
 └── requirements.txt       # Python dependencies
 ```
@@ -109,6 +107,7 @@ Using **JWT (JSON Web Tokens)** for secure API access.
 | POST   | /savings-goals/       | Set a new savings goal      |
 | POST   | /api/token/           | User login (obtain token)   |
 | POST   | /api/token/refresh/   | Refresh JWT token           |
+| POST   | /book-recommend/      | Generate book recommendations|
 
 > **Note:** All endpoints (except auth) require authentication.
 
@@ -124,12 +123,6 @@ AI modules will be served via APIs or integrated directly within the Django app.
 
 ---
 
-## 🧪 Running Tests
-```bash
-python manage.py test
-```
-
----
 
 ## 🙌 Contributing
 1. Fork the repository
