@@ -16,6 +16,10 @@ from dotenv import load_dotenv
 load_dotenv()
 #OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+VISA_API_KEY = os.getenv('VISA_API_KEY')
+SHARE_SECRET = os.getenv('SHARE_SECRET')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -51,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'corsheaders',
+    'chat',
 ]
 
 MIDDLEWARE = [
