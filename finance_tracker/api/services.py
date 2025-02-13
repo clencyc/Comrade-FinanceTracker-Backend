@@ -22,8 +22,12 @@ def get_book_recommendations(user_query):
        - Rating: Rating  
        - Cover Image: URL
     """
-    response = model.generate_content(prompt)
-
+    try:
+        response = model.generate_content(prompt)
+    except Exception as e:
+        logger.error(f"Error generating content: {e}")
+        return []
+    
     if hasattr(response, 'generations') and response.generations:
         text_response = response.generations[0].text.strip()
     else:
@@ -37,11 +41,6 @@ def get_book_recommendations(user_query):
         recommendations = parse_recommendations(text_response)
 
     return recommendations
-
-
-# FILE: services.py
-
-import re
 
 def parse_recommendations(text_response):
     recommendations = []

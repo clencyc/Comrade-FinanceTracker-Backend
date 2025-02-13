@@ -65,8 +65,6 @@ class DailySavingsCreateView(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 
-
-
 @api_view(['POST'])
 def generate_book_recommendations(request):
     user_query = request.data.get('query', '')
@@ -79,37 +77,26 @@ def generate_book_recommendations(request):
     if existing_books.exists():
         first_book = existing_books.first()
         title = first_book.title
-        author = first_book.author
-        genre = first_book.genre
-        description = first_book.description
-        difficulty_level = first_book.difficulty_level
-        rating = first_book.rating
-        image_url = first_book.image_url
     else:
         title = 'Unknown Title'
-        author = 'Unknown Author'
-        genre = 'Unknown Genre'
-        description = ''
-        difficulty_level = 'Beginner'
-        rating = 5.0
-        image_url = ''
 
-    # Use the get_book_recommendations function to generate recommendations
     recommendations = get_book_recommendations(title)
 
-    if recommendations:
-        first_book = recommendations[0]  # Assuming recommendations is a list of book dictionaries
-        if isinstance(first_book, dict):
-            new_book = FinancialBook.objects.create(
-                title=first_book.get('title', 'Unknown Title'),
-                author=first_book.get('author', 'Unknown Author'),
-                genre=first_book.get('genre', 'Unknown Genre'),
-                description=first_book.get('description', ''),
-                difficulty_level=first_book.get('difficulty_level', 'Beginner'),
-                rating=first_book.get('rating', 5.0),
-                image_url=first_book.get('image_url', '')
-            )
-        else:
-            return Response({"error": "Invalid recommendation format"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if not recommendations:
+        return Response({"error": "No recommendations found"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    first_book = recommendations[0]  # Assuming recommendations is a list of book dictionaries
+    if isinstance(first_book, dict):
+        new_book = FinancialBook.objects.create(
+            title=first_book.get('title', 'Unknown Title'),
+            author=first_book.get('author', 'Unknown Author'),
+            genre=first_book.get('genre', 'Unknown Genre'),
+            description=first_book.get('description', ''),
+            difficulty_level=first_book.get('difficulty_level', 'Beginner'),
+            rating=first_book.get('rating', 5.0),
+            image_url=first_book.get('image_url', '')
+        )
+    else:
+        return Response({"error": "Invalid recommendation format"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(recommendations)
