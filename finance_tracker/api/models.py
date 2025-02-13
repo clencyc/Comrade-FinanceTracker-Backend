@@ -90,33 +90,6 @@ class Transaction(models.Model):
     withdrawn = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     category = models.CharField(max_length=250, blank=True, null=True)
-
-    def categorize_transaction(self):
-        """Automatically categorize transaction based on details"""
-        details_lower = self.details.lower()
-        if "bundle" in details_lower:
-            return "Data Purchase"
-        elif "merchant payment" in details_lower:
-            return "Shopping"
-        elif "pay bill" in details_lower:
-            return "Utilities"
-        elif "customer transfer" in details_lower:
-            return "Transfer"
-        else:
-            return "Other"
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.category:
-            self.category = self.categorize_transaction()
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.receipt_no} - {self.category}"
-
-    def __str__(self):
-        return f"{self.transaction_id} - {self.amount}"
     
     def categorize_transaction(transaction_details):
         """Uses Gemini AI to classify transaction details into a financial category."""
