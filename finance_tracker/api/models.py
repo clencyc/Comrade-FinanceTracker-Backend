@@ -4,16 +4,8 @@ from django.utils import timezone
 from django.conf import settings
 import google.generativeai as genai
 import uuid
-from django.contrib.auth.models import AbstractUser
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
-
-# Authentication model
-class CustomUser(AbstractUser):
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-
-    def __str__(self):
-        return self.username
 
 
 # expense models

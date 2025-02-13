@@ -12,16 +12,10 @@ from .serializers import ExpenseSerializer, BudgetSerializer, SavingsGoalSeriali
 import re
 from datetime import date
 from .services import get_book_recommendations
+import logging
 
+logger = logging.getLogger(__name__)
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
-from django.contrib.auth import authenticate
-
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
 #openai.api_key = settings.OPENAI_API_KEY
@@ -71,71 +65,51 @@ class DailySavingsCreateView(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 
+
+
 @api_view(['POST'])
 def generate_book_recommendations(request):
-    """Generate financial book recommendations using Gemini AI"""
-   
-    user_query = request.data.get('query', 'Recommend 10 financial books for students')
+    user_query = request.data.get('query', '')
 
     if not user_query:
-        return Response({"error": "Query cannot be empty"}, status=400)
-    
-    # to check if there are existing books in the database with the same genre
+        return Response({"error": "Query parameter is missing"}, status=status.HTTP_400_BAD_REQUEST)
+
     existing_books = FinancialBook.objects.filter(genre__icontains=user_query)
 
     if existing_books.exists():
-        # Return existing books if found
-        books = existing_books.values('title', 'author', 'genre', 'difficulty_level', 'rating')
-        return Response({"books": list(books)}, status=200)
-    
-    # Use Gemini AI to get book recommendations
-    recommendations = get_book_recommendations(user_query)
-    
-    # Example logic to create a new book entry with a default rating
-    new_book = FinancialBook.objects.create(
-        title="Example Book Title",
-        author="Unknown",
-        genre=user_query,
-        description=recommendations,
-        difficulty_level="Beginner",
-        rating=5.0
-    )
+        first_book = existing_books.first()
+        title = first_book.title
+        author = first_book.author
+        genre = first_book.genre
+        description = first_book.description
+        difficulty_level = first_book.difficulty_level
+        rating = first_book.rating
+        image_url = first_book.image_url
+    else:
+        title = 'Unknown Title'
+        author = 'Unknown Author'
+        genre = 'Unknown Genre'
+        description = ''
+        difficulty_level = 'Beginner'
+        rating = 5.0
+        image_url = ''
 
-    return Response({"message": "New book entry created", "book": new_book.title, "recommendations": recommendations}, status=201)
-# TODO - Add cover image to book recommendation API
-# Add a financial quote
-# Add a chatbot
+    # Use the get_book_recommendations function to generate recommendations
+    recommendations = get_book_recommendations(title)
 
+    if recommendations:
+        first_book = recommendations[0]  # Assuming recommendations is a list of book dictionaries
+        if isinstance(first_book, dict):
+            new_book = FinancialBook.objects.create(
+                title=first_book.get('title', 'Unknown Title'),
+                author=first_book.get('author', 'Unknown Author'),
+                genre=first_book.get('genre', 'Unknown Genre'),
+                description=first_book.get('description', ''),
+                difficulty_level=first_book.get('difficulty_level', 'Beginner'),
+                rating=first_book.get('rating', 5.0),
+                image_url=first_book.get('image_url', '')
+            )
+        else:
+            return Response({"error": "Invalid recommendation format"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# Authentication
-class UserRegistrationView(APIView):
-    def post(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class UserLoginView(APIView):
-    def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
-            user = authenticate(username=username, password=password)
-            if user:
-                refresh = RefreshToken.for_user(user)
-                return Response({
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }, status=status.HTTP_200_OK)
-            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# View Protection
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-class ProtectedView(APIView):
-    def get(self, request):
-        return Response({'message': 'This is a protected view!'})
+    return Response(recommendations)
