@@ -1,0 +1,18 @@
+{
+    "builds": [
+      {
+        "src": "finance_tracker/wsgi.py",
+        "use": "@vercel/python",
+        "config": {
+          "runtime": "python",
+          "maxLambdaSize": "15mb"
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "finance_tracker/wsgi.py"
+      }
+    ]
+  }

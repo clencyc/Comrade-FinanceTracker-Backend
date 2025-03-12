@@ -41,7 +41,9 @@ SECRET_KEY = 'django-insecure-bi$=3d8b18%xj7z6omvrw+2ehru^6p&ofu2b0ni6wtd^%tuxsi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.vercel.app',
+]
 
 
 # Application definition
@@ -56,7 +58,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'corsheaders',
-    'chat',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -110,6 +112,8 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+
 
 
 # Password validation
@@ -189,4 +193,4 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'api.CustomUser'
