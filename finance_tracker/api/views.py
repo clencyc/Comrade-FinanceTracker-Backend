@@ -75,7 +75,7 @@ class DailySavingsCreateView(generics.CreateAPIView):
 def generate_book_recommendations(request):
     """Generate financial book recommendations using Gemini AI"""
    
-    user_query = request.data.get('query', 'Recommend 10 financial books for students')
+    user_query = request.data.get('query', 'Recommend 10 financial books for students. Include the title, author, genre, difficulty level, rating, and a URL to the book cover image for each book.')
 
     if not user_query:
         return Response({"error": "Query cannot be empty"}, status=400)
@@ -98,10 +98,18 @@ def generate_book_recommendations(request):
         genre=user_query,
         description=recommendations,
         difficulty_level="Beginner",
-        rating=5.0
+        rating=5.0,
+        image_url="https://www.google.com/imgres?q=robert%20kiyosaki%20books&imgurl=https%3A%2F%2Fnuriakenya.com%2Fwp-content%2Fuploads%2F2020%2F11%2FRich-Dad-Poor-Dad-Nuria-Kenya.jpg&imgrefurl=https%3A%2F%2Fnuriakenya.com%2Fproduct%2Frich-dad-poor-dad-by-robert-kiyosaki%2F&docid=gvfPVnNsy1j0lM&tbnid=eVZVAZ1awP9w8M&vet=12ahUKEwik-OGctcCLAxWpV6QEHYOXJagQM3oECBgQAA..i&w=680&h=850&hcb=2&ved=2ahUKEwik-OGctcCLAxWpV6QEHYOXJagQM3oECBgQAA"
     )
 
-    return Response({"message": "New book entry created", "book": new_book.title, "recommendations": recommendations}, status=201)
+    return Response({
+            "message": "New book entry created",
+            "book": new_book.title,
+            "recommendations": recommendations,
+            "image_url": new_book.image_url 
+                     
+                },
+                status=201)
 # TODO - Add cover image to book recommendation API
 # Add a financial quote
 # Add a chatbot
